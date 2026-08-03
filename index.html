@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ParkFácil — Credenciais de estacionamento, do jeito digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #17223B;
+    --ink-soft: #2B3A5C;
+    --paper: #F8F6F1;
+    --paper-dim: #EFEBE1;
+    --yellow: #E8A828;
+    --yellow-deep: #C4890F;
+    --green: #2E6F53;
+    --steel: #5B6577;
+    --line: #DAD5C9;
+    --white: #FFFFFF;
+    --radius: 10px;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  img{ max-width:100%; display:block; }
+  a{ color:inherit; text-decoration:none; }
+  ul{ list-style:none; }
+
+  h1,h2,h3,.display{
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+
+  .wrap{
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(248,246,241,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 16px 24px;
+    max-width: 1180px;
+    margin:0 auto;
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Oswald', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .logo-badge{
+    width: 34px; height:34px;
+    border-radius: 6px;
+    background: var(--ink);
+    color: var(--yellow);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Oswald', sans-serif;
+    font-weight:700;
+    font-size: 1.05rem;
+    border: 2px solid var(--ink);
+  }
+  .nav-links{
+    display:flex; gap:32px;
+    font-size: 0.92rem;
+    font-weight: 500;
+  }
+  .nav-links a{ color: var(--steel); transition: color .15s; }
+  .nav-links a:hover{ color: var(--ink); }
+  .nav-cta{
+    display:flex; align-items:center; gap:20px;
+  }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding: 12px 22px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.92rem;
+    cursor:pointer;
+    border: 2px solid transparent;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:focus-visible{ outline: 3px solid var(--green); outline-offset: 2px; }
+  .btn-primary{
+    background: var(--yellow);
+    color: var(--ink);
+    border-color: var(--yellow);
+  }
+  .btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 6px 0 var(--yellow-deep); }
+  .btn-outline{
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+  .btn-outline:hover{ background: var(--ink); color: var(--paper); }
+  .hamburger{ display:none; background:none; border:none; cursor:pointer; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding: 88px 0 64px;
+    display:grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 56px;
+    align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--green);
+    background: rgba(46,111,83,0.09);
+    border: 1px solid rgba(46,111,83,0.25);
+    padding: 6px 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  .hero h1{
+    font-size: clamp(2.1rem, 4.4vw, 3.4rem);
+    line-height: 1.08;
+    margin-bottom: 22px;
+  }
+  .hero h1 em{
+    font-style: normal;
+    color: var(--green);
+  }
+  .hero p.lead{
+    font-size: 1.08rem;
+    color: var(--steel);
+    max-width: 46ch;
+    margin-bottom: 32px;
+  }
+  .hero-actions{ display:flex; gap: 14px; flex-wrap: wrap; margin-bottom: 36px;}
+  .hero-note{
+    display:flex; align-items:center; gap: 10px;
+    font-size: 0.85rem;
+    color: var(--steel);
+  }
+  .hero-note .dot{ width:7px; height:7px; border-radius:50%; background: var(--green); }
+
+  /* ---------- CREDENTIAL CARD (signature element) ---------- */
+  .card-stage{
+    position: relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    perspective: 1200px;
+  }
+  .credential{
+    width: 100%;
+    max-width: 380px;
+    background: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 60px -25px rgba(23,34,59,0.35);
+    padding: 22px;
+    position: relative;
+    transform: rotate(-2deg);
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{ transform: rotate(-2deg) translateY(0px); }
+    50%{ transform: rotate(-2deg) translateY(-8px); }
+  }
+  .credential-top{
+    display:flex; justify-content:space-between; align-items:flex-start;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+  }
+  .credential-top .muni{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--steel);
+    line-height:1.4;
+  }
+  .credential-top .type{
+    background: var(--ink);
+    color: var(--yellow);
+    font-family:'Oswald', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .credential-body{ display:flex; gap: 14px; }
+  .photo{
+    width: 70px; height: 86px;
+    background: var(--paper-dim);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    flex-shrink: 0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .photo svg{ width: 34px; height: 34px; color: var(--steel); }
+  .credential-fields{ flex:1; }
+  .credential-fields .name{
+    font-family:'Oswald', sans-serif;
+    font-size: 1rem;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .field-row{
+    display:flex; justify-content:space-between;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--steel);
+    border-top: 1px dashed var(--line);
+    padding: 5px 0;
+  }
+  .field-row span:last-child{ color: var(--ink); font-weight:500; }
+  .credential-bottom{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+  .qr{
+    width: 46px; height: 46px;
+    background:
+      repeating-linear-gradient(0deg, var(--ink) 0 3px, transparent 3px 6px),
+      repeating-linear-gradient(90deg, var(--ink) 0 3px, transparent 3px 6px);
+    background-blend-mode: multiply;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    opacity: 0.85;
+  }
+  .signature svg{ width: 90px; height: 30px; }
+  .stamp{
+    position: absolute;
+    top: 40%;
+    right: -18px;
+    width: 108px; height: 108px;
+    border: 3px solid var(--green);
+    border-radius: 50%;
+    color: var(--green);
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    font-family:'Oswald', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transform: rotate(12deg) scale(0);
+    background: rgba(255,255,255,0.6);
+    opacity: 0;
+  }
+  .stamp.show{
+    animation: stamp-in 0.5s cubic-bezier(.2,1.4,.4,1) forwards;
+  }
+  @keyframes stamp-in{
+    0%{ transform: rotate(12deg) scale(0); opacity: 0; }
+    60%{ transform: rotate(12deg) scale(1.15); opacity: 1; }
+    100%{ transform: rotate(12deg) scale(1); opacity: 1; }
+  }
+
+  /* ---------- SECTION SHARED ---------- */
+  section{ padding: 88px 0; }
+  .section-head{ max-width: 640px; margin-bottom: 52px; }
+  .section-head .eyebrow{ margin-bottom: 16px; }
+  .section-head h2{ font-size: clamp(1.7rem, 3vw, 2.3rem); margin-bottom: 14px; }
+  .section-head p{ color: var(--steel); font-size: 1.02rem; }
+
+  /* ---------- COMPARISON ---------- */
+  .compare{
+    background: var(--white);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .compare-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow:hidden;
+  }
+  .compare-col{ padding: 32px; }
+  .compare-col.old{
+    background: var(--paper-dim);
+    color: var(--steel);
+  }
+  .compare-col.new{
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .compare-col h3{
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: inherit;
+  }
+  .compare-col.old h3{ text-decoration: line-through; text-decoration-color: #B4AC9A; }
+  .compare-col.new h3{ color: var(--yellow); }
+  .compare-list li{
+    display:flex; gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    font-size: 0.93rem;
+  }
+  .compare-col.new .compare-list li{ border-top: 1px solid rgba(255,255,255,0.12); }
+  .compare-list li .mark{ flex-shrink:0; font-family:'IBM Plex Mono', monospace; }
+
+  /* ---------- PROCESS ---------- */
+  .process-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .process-step{
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    position:relative;
+  }
+  .step-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--green);
+    margin-bottom: 16px;
+    display:block;
+  }
+  .process-step h3{
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+  }
+  .process-step p{ color: var(--steel); font-size: 0.92rem; }
+  .process-arrow{
+    display:none;
+  }
+
+  /* ---------- FEATURES ---------- */
+  .features-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow:hidden;
+  }
+  .feature{
+    background: var(--white);
+    padding: 30px 26px;
+  }
+  .feature .ic{
+    width: 38px; height:38px;
+    margin-bottom: 18px;
+    color: var(--ink);
+  }
+  .feature h3{
+    font-size: 0.98rem;
+    margin-bottom: 8px;
+    text-transform: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+  }
+  .feature p{ color: var(--steel); font-size: 0.9rem; }
+
+  /* ---------- CTA BAND ---------- */
+  .cta-band{
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 18px;
+    padding: 56px 48px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 32px;
+    margin: 0 24px;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  .cta-band h2{ color: var(--paper); font-size: clamp(1.5rem,3vw,2rem); margin-bottom:10px; }
+  .cta-band p{ color: #B9C0D1; max-width: 46ch; }
+  .cta-band .btn-primary:hover{ box-shadow: 0 6px 0 var(--yellow-deep); }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    padding: 40px 0 32px;
+    border-top: 1px solid var(--line);
+    margin-top: 88px;
+  }
+  .footer-row{
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap: wrap; gap: 16px;
+    font-size: 0.82rem;
+    color: var(--steel);
+  }
+
+  /* ---------- REVEAL ANIMATION ---------- */
+  .reveal{ opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 900px){
+    .hero{ grid-template-columns: 1fr; padding-top: 48px; }
+    .card-stage{ order:-1; }
+    .credential{ max-width: 320px; margin: 0 auto; }
+    .compare-grid{ grid-template-columns: 1fr; }
+    .process-grid{ grid-template-columns: 1fr; }
+    .features-grid{ grid-template-columns: 1fr 1fr; }
+    .cta-band{ flex-direction: column; align-items:flex-start; text-align:left; }
+  }
+
+  /* ---------- CHAT WIDGET ---------- */
+  .chat-launcher{
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 200;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--yellow);
+    border: none;
+    box-shadow: 0 10px 30px -8px rgba(23,34,59,0.5);
+    display:flex; align-items:center; justify-content:center;
+    cursor: pointer;
+    transition: transform .15s ease;
+  }
+  .chat-launcher:hover{ transform: scale(1.06); }
+  .chat-launcher svg{ width: 26px; height: 26px; }
+  .chat-launcher .badge{
+    position:absolute; top:-2px; right:-2px;
+    width: 14px; height:14px;
+    border-radius: 50%;
+    background: var(--green);
+    border: 2px solid var(--paper);
+  }
+
+  .chat-panel{
+    position: fixed;
+    bottom: 96px;
+    right: 24px;
+    z-index: 200;
+    width: 360px;
+    max-width: calc(100vw - 32px);
+    height: 500px;
+    max-height: calc(100vh - 140px);
+    background: var(--white);
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    box-shadow: 0 24px 60px -20px rgba(23,34,59,0.45);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .chat-panel.open{ display: flex; }
+
+  .chat-head{
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px 18px;
+    display:flex; align-items:center; gap: 12px;
+  }
+  .chat-head .avatar{
+    width: 36px; height:36px;
+    border-radius: 50%;
+    background: var(--yellow);
+    color: var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    flex-shrink:0;
+  }
+  .chat-head .who{ flex:1; }
+  .chat-head .who .name{ font-family:'Inter',sans-serif; font-weight:700; font-size:0.92rem; }
+  .chat-head .who .status{ font-size: 0.72rem; color:#B9C0D1; display:flex; align-items:center; gap:6px; }
+  .chat-head .who .status .dot{ width:6px; height:6px; border-radius:50%; background:#4ADE80; }
+  .chat-close{ background:none; border:none; color:var(--paper); cursor:pointer; opacity:0.8; }
+  .chat-close:hover{ opacity:1; }
+
+  .chat-body{
+    flex:1;
+    overflow-y: auto;
+    padding: 16px;
+    display:flex; flex-direction:column; gap: 10px;
+    background: var(--paper);
+  }
+  .msg{
+    max-width: 84%;
+    padding: 10px 13px;
+    border-radius: 12px;
+    font-size: 0.87rem;
+    line-height: 1.45;
+  }
+  .msg.bot{
+    background: var(--white);
+    border: 1px solid var(--line);
+    align-self: flex-start;
+    border-bottom-left-radius: 3px;
+  }
+  .msg.user{
+    background: var(--ink);
+    color: var(--paper);
+    align-self: flex-end;
+    border-bottom-right-radius: 3px;
+  }
+  .msg.typing{
+    display:flex; gap:4px; align-items:center;
+    padding: 13px 15px;
+  }
+  .msg.typing span{
+    width:6px; height:6px; border-radius:50%;
+    background: var(--steel);
+    animation: typing-bounce 1.2s infinite ease-in-out;
+  }
+  .msg.typing span:nth-child(2){ animation-delay: .15s; }
+  .msg.typing span:nth-child(3){ animation-delay: .3s; }
+  @keyframes typing-bounce{
+    0%,60%,100%{ transform: translateY(0); opacity:0.5; }
+    30%{ transform: translateY(-4px); opacity:1; }
+  }
+
+  .chat-suggestions{
+    display:flex; flex-wrap:wrap; gap:6px;
+    padding: 0 16px 12px;
+    background: var(--paper);
+  }
+  .chip{
+    font-size: 0.76rem;
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    color: var(--steel);
+    cursor:pointer;
+  }
+  .chip:hover{ border-color: var(--ink); color: var(--ink); }
+
+  .chat-input-row{
+    display:flex; align-items:flex-end; gap: 8px;
+    padding: 12px;
+    border-top: 1px solid var(--line);
+    background: var(--white);
+  }
+  .chat-input-row textarea{
+    flex:1;
+    resize: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.87rem;
+    max-height: 90px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .chat-input-row textarea:focus-visible{ outline: 2px solid var(--green); }
+  .chat-send{
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    background: var(--yellow);
+    border: none;
+    color: var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    cursor: pointer;
+    flex-shrink:0;
+  }
+  .chat-send:hover{ background: var(--yellow-deep); }
+  .chat-send:disabled{ opacity:0.5; cursor:not-allowed; }
+  .chat-disclaimer{
+    font-size: 0.66rem;
+    color: var(--steel);
+    text-align:center;
+    padding: 0 12px 10px;
+    background: var(--white);
+  }
+
+  @media (max-width: 640px){
+    .chat-panel{
+      right: 16px; left: 16px; width: auto;
+      bottom: 88px;
+      height: min(70vh, 520px);
+    }
+    .chat-launcher{ right: 16px; bottom: 16px; }
+    nav{ padding: 14px 20px; }
+    .nav-links{
+      position: fixed; top: 64px; left: 0; right:0;
+      background: var(--paper);
+      flex-direction: column;
+      padding: 20px 24px;
+      gap: 18px;
+      border-bottom: 1px solid var(--line);
+      transform: translateY(-130%);
+      transition: transform .25s ease;
+    }
+    .nav-links.open{ transform: translateY(0); }
+    .nav-cta .btn-outline{ display:none; }
+    .hamburger{ display:block; }
+    .hero{ padding: 32px 0 48px; }
+    .hero-actions{ flex-direction: column; }
+    .hero-actions .btn{ width:100%; }
+    .features-grid{ grid-template-columns: 1fr; }
+    .cta-band{ padding: 36px 24px; border-radius: 12px; }
+    section{ padding: 56px 0; }
+    .stamp{ right: 4px; top: -12px; width: 84px; height:84px; font-size: 0.6rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">
+      <span class="logo-badge">P</span>
+      ParkFácil
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#como-funciona">Como funciona</a></li>
+      <li><a href="#recursos">Recursos</a></li>
+      <li><a href="#comparativo">Por que trocar</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#contato" class="btn btn-outline">Falar com a equipe</a>
+      <a href="#contato" class="btn btn-primary">Pedir demonstração</a>
+      <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="wrap">
+    <section class="hero" style="padding-bottom:0;">
+      <div>
+        <span class="eyebrow">● Para secretarias de trânsito e mobilidade</span>
+        <h1>Credencial de estacionamento para idosos e PCD, <em>sem papel e sem fila</em></h1>
+        <p class="lead">ParkFácil leva a solicitação, a análise e a emissão da credencial de estacionamento para um único fluxo digital — do CEP do cidadão à assinatura no PDF final.</p>
+        <div class="hero-actions">
+          <a href="#contato" class="btn btn-primary">Pedir demonstração</a>
+          <a href="#como-funciona" class="btn btn-outline">Ver como funciona</a>
+        </div>
+        <div class="hero-note"><span class="dot"></span> Fluxo pensado para o dia a dia do servidor público — sem sistemas paralelos.</div>
+      </div>
+      <div class="card-stage">
+        <div class="credential">
+          <div class="credential-top">
+            <div class="muni">SECRETARIA MUNICIPAL DE<br>TRÂNSITO E MOBILIDADE</div>
+            <div class="type">PCD / IDOSO</div>
+          </div>
+          <div class="credential-body">
+            <div class="photo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg>
+            </div>
+            <div class="credential-fields">
+              <div class="name">Maria S. Santos</div>
+              <div class="field-row"><span>Credencial</span><span>PF-2026-00841</span></div>
+              <div class="field-row"><span>Categoria</span><span>Idoso · 65+</span></div>
+              <div class="field-row"><span>Validade</span><span>08/2028</span></div>
+            </div>
+          </div>
+          <div class="credential-bottom">
+            <div class="qr"></div>
+            <div class="signature">
+              <svg viewBox="0 0 100 30" fill="none" stroke="#17223B" stroke-width="1.5"><path d="M4 22c4-10 8-14 12-8s4 10 8 4 6-12 10-6 5 9 9 4 7-10 11-6 6 8 10 4 5-8 8-6" /></svg>
+            </div>
+          </div>
+          <div class="stamp" id="stamp">Emitido<br>digitalmente</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="compare" id="comparativo">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Antes e depois</span>
+        <h2>O processo que sua secretaria já conhece — só que sem o gargalo</h2>
+        <p>Nada muda na exigência legal do pedido. Muda como ele é preenchido, analisado e arquivado.</p>
+      </div>
+      <div class="compare-grid reveal">
+        <div class="compare-col old">
+          <h3>Fluxo em papel</h3>
+          <ul class="compare-list">
+            <li><span class="mark">–</span> Cidadão preenche formulário à mão no balcão</li>
+            <li><span class="mark">–</span> Documentos comprobatórios em cópia física</li>
+            <li><span class="mark">–</span> Análise depende de processo físico circulando</li>
+            <li><span class="mark">–</span> Assinatura e carimbo manuais</li>
+            <li><span class="mark">–</span> Reimpressão a cada renovação ou perda</li>
+          </ul>
+        </div>
+        <div class="compare-col new">
+          <h3>Fluxo ParkFácil</h3>
+          <ul class="compare-list">
+            <li><span class="mark">＋</span> Endereço preenchido automaticamente pelo CEP</li>
+            <li><span class="mark">＋</span> Upload de documentos direto no pedido</li>
+            <li><span class="mark">＋</span> Painel único de análise, com status visível</li>
+            <li><span class="mark">＋</span> Assinatura digital com validade e data</li>
+            <li><span class="mark">＋</span> PDF final gerado e disponível em segundos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section id="como-funciona">
+      <div class="section-head reveal">
+        <span class="eyebrow">Como funciona</span>
+        <h2>Três etapas, um único sistema</h2>
+        <p>O pedido nasce digital e permanece digital até a credencial sair pronta.</p>
+      </div>
+      <div class="process-grid">
+        <div class="process-step reveal">
+          <span class="step-num mono">01 — Solicitação</span>
+          <h3>Cidadão solicita on-line</h3>
+          <p>Formulário com busca automática de endereço pelo CEP e upload dos documentos exigidos, direto do celular ou computador.</p>
+        </div>
+        <div class="process-step reveal">
+          <span class="step-num mono">02 — Análise</span>
+          <h3>Servidor analisa no painel</h3>
+          <p>Cada pedido chega organizado, com histórico e status, pronto para aprovação ou solicitação de ajuste.</p>
+        </div>
+        <div class="process-step reveal">
+          <span class="step-num mono">03 — Emissão</span>
+          <h3>Credencial sai assinada</h3>
+          <p>Assinatura digital, geração do PDF e QR Code de validação — pronta para impressão ou uso direto no celular.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="recursos">
+      <div class="section-head reveal">
+        <span class="eyebrow">Recursos</span>
+        <h2>Construído para o fluxo real de uma secretaria</h2>
+        <p>Cada recurso resolve um ponto específico do processo de emissão — nada além do necessário.</p>
+      </div>
+      <div class="features-grid reveal">
+        <div class="feature">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          <h3>Endereço por CEP</h3>
+          <p>Preenchimento automático de rua, bairro e cidade assim que o cidadão digita o CEP.</p>
+        </div>
+        <div class="feature">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          <h3>Envio de documentos</h3>
+          <p>Upload direto de laudo, comprovante e documento de identidade no próprio formulário.</p>
+        </div>
+        <div class="feature">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20c4-9 8-13 12-7s4 9 8 5" /></svg>
+          <h3>Assinatura digital</h3>
+          <p>Captura da assinatura em tela, vinculada à credencial no momento da emissão.</p>
+        </div>
+        <div class="feature">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+          <h3>PDF em segundos</h3>
+          <p>Geração instantânea do documento final, pronto para impressão ou envio digital.</p>
+        </div>
+        <div class="feature">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="14" rx="1.5"/><path d="M3 9h18M8 14h4"/></svg>
+          <h3>Painel administrativo</h3>
+          <p>Visão de todos os pedidos por status, com filtros por bairro, categoria e data.</p>
+        </div>
+        <div class="feature">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><path d="M14 14h3m3 0v3m0 3h-6v-6"/></svg>
+          <h3>Validação por QR Code</h3>
+          <p>Fiscalização em campo confirma a autenticidade da credencial em segundos.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contato" style="padding-top:0;">
+      <div class="cta-band reveal">
+        <div>
+          <h2>Leve o ParkFácil para a sua secretaria</h2>
+          <p>Uma demonstração guiada, com o fluxo completo — do pedido do cidadão à credencial assinada.</p>
+        </div>
+        <a href="mailto:contato@parkfacil.exemplo" class="btn btn-primary">Pedir demonstração</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-row">
+      <div>ParkFácil — protótipo de portfólio, inspirado em um sistema real de emissão de credenciais.</div>
+      <div class="mono">© 2026</div>
+    </div>
+  </div>
+</footer>
+
+<button class="chat-launcher" id="chatLauncher" aria-label="Abrir chat com a atendente">
+  <span class="badge"></span>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 0 1-8.9 8.4 8.6 8.6 0 0 1-3.5-.7L3 20l1-4.9a8.4 8.4 0 0 1-.9-3.6A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/></svg>
+</button>
+
+<div class="chat-panel" id="chatPanel" role="dialog" aria-label="Chat com atendente ParkFácil">
+  <div class="chat-head">
+    <div class="avatar">A</div>
+    <div class="who">
+      <div class="name">Ana · Atendimento ParkFácil</div>
+      <div class="status"><span class="dot"></span> Online agora</div>
+    </div>
+    <button class="chat-close" id="chatClose" aria-label="Fechar chat">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="chat-body" id="chatBody">
+    <div class="msg bot">Oi! Sou a Ana, atendente virtual do ParkFácil 👋 Posso explicar como funciona a emissão da credencial de estacionamento, os documentos exigidos ou os prazos. O que você quer saber?</div>
+  </div>
+  <div class="chat-suggestions" id="chatSuggestions">
+    <span class="chip">Quais documentos preciso enviar?</span>
+    <span class="chip">Quanto tempo leva a emissão?</span>
+    <span class="chip">Como funciona a assinatura digital?</span>
+  </div>
+  <div class="chat-input-row">
+    <textarea id="chatInput" rows="1" placeholder="Digite sua pergunta..." aria-label="Mensagem"></textarea>
+    <button class="chat-send" id="chatSend" aria-label="Enviar mensagem">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+  <div class="chat-disclaimer">Assistente de demonstração — as respostas são geradas por IA para fins de portfólio.</div>
+</div>
+
+<script>
+  // ---- Chat widget logic ----
+  const chatLauncher = document.getElementById('chatLauncher');
+  const chatPanel = document.getElementById('chatPanel');
+  const chatClose = document.getElementById('chatClose');
+  const chatBody = document.getElementById('chatBody');
+  const chatInput = document.getElementById('chatInput');
+  const chatSend = document.getElementById('chatSend');
+  const chatSuggestions = document.getElementById('chatSuggestions');
+
+  const SYSTEM_PROMPT = `Você é Ana, atendente virtual do ParkFácil, sistema digital de uma Secretaria Municipal de Trânsito e Mobilidade para emissão de credenciais de estacionamento destinadas a idosos (65+) e pessoas com deficiência (PCD).
+
+Contexto do serviço que você representa:
+- O cidadão solicita on-line: preenche um formulário com endereço (buscado automaticamente pelo CEP) e envia os documentos exigidos (documento de identidade, comprovante de residência e, para PCD, laudo médico com CID).
+- Um servidor da secretaria analisa o pedido em um painel administrativo, podendo aprovar ou solicitar correção.
+- Após aprovação, a credencial é assinada digitalmente e um PDF é gerado automaticamente, com QR Code de validação para fiscalização.
+- Prazo típico de análise: até 5 dias úteis após o envio de todos os documentos corretos.
+- A credencial tem validade de 2 anos e pode ser renovada pelo mesmo fluxo digital.
+- Em caso de perda, o cidadão pode gerar uma segunda via pelo próprio painel, sem precisar refazer o processo do zero.
+
+Responda sempre em português do Brasil, em tom cordial, direto e prestativo, como uma atendente de secretaria pública experiente. Respostas curtas (2 a 4 frases). Se perguntarem algo fora do escopo de credenciais/estacionamento/PCD/idoso, explique gentilmente que seu foco é esse serviço. Este é um chatbot de demonstração para um portfólio de desenvolvimento — se perguntado diretamente, pode admitir isso com naturalidade.`;
+
+  let history = [];
+  let panelOpen = false;
+
+  function toggleChat(open){
+    panelOpen = open;
+    chatPanel.classList.toggle('open', open);
+    if (open) chatInput.focus();
+  }
+
+  chatLauncher.addEventListener('click', () => toggleChat(!panelOpen));
+  chatClose.addEventListener('click', () => toggleChat(false));
+
+  chatInput.addEventListener('input', () => {
+    chatInput.style.height = 'auto';
+    chatInput.style.height = Math.min(chatInput.scrollHeight, 90) + 'px';
+  });
+  chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  chatSend.addEventListener('click', sendMessage);
+
+  chatSuggestions.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chatInput.value = chip.textContent;
+      sendMessage();
+    });
+  });
+
+  function addMessage(role, text){
+    const div = document.createElement('div');
+    div.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
+    div.textContent = text;
+    chatBody.appendChild(div);
+    chatBody.scrollTop = chatBody.scrollHeight;
+    return div;
+  }
+
+  function addTyping(){
+    const div = document.createElement('div');
+    div.className = 'msg bot typing';
+    div.id = 'typingIndicator';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    chatBody.appendChild(div);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function removeTyping(){
+    const el = document.getElementById('typingIndicator');
+    if (el) el.remove();
+  }
+
+  async function sendMessage(){
+    const text = chatInput.value.trim();
+    if (!text || chatSend.disabled) return;
+
+    chatSuggestions.style.display = 'none';
+    addMessage('user', text);
+    history.push({ role: 'user', content: text });
+    chatInput.value = '';
+    chatInput.style.height = 'auto';
+    chatSend.disabled = true;
+    addTyping();
+
+    try {
+      // A chave da IA fica protegida na função /api/chat — nunca no navegador.
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system: SYSTEM_PROMPT,
+          messages: history
+        })
+      });
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (parseErr) {
+        throw new Error('Resposta inválida do servidor (status ' + response.status + ')');
+      }
+
+      removeTyping();
+
+      if (!response.ok || data.type === 'error') {
+        const apiMsg = data && data.error && data.error.message ? data.error.message : ('status ' + response.status);
+        console.error('Chat API error:', data);
+        addMessage('bot', 'Erro da API: ' + apiMsg);
+        history.pop(); // remove the user turn so a retry doesn't duplicate context
+        return;
+      }
+
+      const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text);
+      const reply = textBlocks.join('\n').trim() || 'Desculpe, não consegui responder agora. Pode tentar novamente?';
+
+      addMessage('bot', reply);
+      history.push({ role: 'assistant', content: reply });
+    } catch (err) {
+      removeTyping();
+      console.error('Chat error:', err);
+      addMessage('bot', 'Erro de conexão: ' + (err && err.message ? err.message : 'desconhecido') + '. Pode tentar de novo?');
+      history.pop();
+    } finally {
+      chatSend.disabled = false;
+    }
+  }
+
+  // Mobile nav toggle
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => navLinks.classList.remove('open'));
+  });
+
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Stamp animation once hero is visible
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('stamp').classList.add('show');
+    }, 700);
+  });
+</script>
+
+</body>
+</html>
