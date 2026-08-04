@@ -925,61 +925,67 @@ Responda sempre em português do Brasil, em tom cordial, direto e prestativo, co
     const el = document.getElementById('typingIndicator');
     if (el) el.remove();
   }
-async function sendMessage(){
-  const text = chatInput.value.trim();
-  if (!text || chatSend.disabled) return;
-
-  chatSuggestions.style.display = 'none';
-  addMessage('user', text);
-  history.push({ role: 'user', content: text });
-  chatInput.value = '';
-  chatInput.style.height = 'auto';
-  chatSend.disabled = true;
-  addTyping();
-
-  try {
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        system: SYSTEM_PROMPT,
-        messages: history
-      })
-    });
-
-    let data;
-    try {
-      data = await response.json();
-    } catch (parseErr) {
-      throw new Error('Resposta inválida do servidor (status ' + response.status + ')');
-    }
-
-    removeTyping();
-
-    if (!response.ok || data.type === 'error') {
-      const apiMsg = data && data.error && data.error.message ? data.error.message : ('status ' + response.status);
-      console.error('Chat API error:', data);
-      addMessage('bot', 'Erro da API: ' + apiMsg);
-      history.pop();
-      chatSuggestions.style.display = 'flex';
-      return;
-    }
-
-    const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text);
-    const reply = textBlocks.join('\n').trim() || 'Desculpe, não consegui responder agora. Pode tentar novamente?';
-
-    addMessage('bot', reply);
-    history.push({ role: 'assistant', content: reply });
-    chatSuggestions.style.display = 'flex';
-  } catch (err) {
-    removeTyping();
-    console.error('Chat error:', err);
-    addMessage('bot', 'Erro de conexão: ' + (err && err.message ? err.message : 'desconhecido') + '. Pode tentar de novo?');
-    history.pop();
-    chatSuggestions.style.display = 'flex';
-  } finally {
-    chatSend.disabled = false;
+// ---- Base de conhecimento do chat (sem API, sem custo) ----
+const KNOWLEDGE_BASE = [
+  {
+    keywords: ['documento', 'documentos', 'preciso enviar', 'laudo', 'comprovante'],
+    reply: 'Você precisa enviar: documento de identidade, comprovante de residência e, no caso de PCD, laudo médico com CID. Tudo é enviado direto no formulário on-line, sem precisar ir até a secretaria.'
+  },
+  {
+    keywords: ['tempo', 'prazo', 'demora', 'quanto tempo', 'quando fica pronto'],
+    reply: 'O prazo típico de análise é de até 5 dias úteis, contados a partir do envio de todos os documentos corretos. Você acompanha o status pelo próprio painel.'
+  },
+  {
+    keywords: ['assinatura', 'assinatura digital', 'como funciona a assinatura'],
+    reply: 'A credencial é assinada digitalmente pelo responsável da secretaria assim que o pedido é aprovado. Isso garante validade legal sem precisar de assinatura física ou reconhecimento em cartório.'
+  },
+  {
+    keywords: ['validade', 'vence', 'renovar', 'renovação'],
+    reply: 'A credencial tem validade de 2 anos e pode ser renovada pelo mesmo fluxo digital, sem precisar refazer todo o processo do zero.'
+  },
+  {
+    keywords: ['perdi', 'perda', 'segunda via', 'extraviei'],
+    reply: 'Em caso de perda, você pode gerar uma segunda via direto pelo painel, sem precisar reiniciar o processo de solicitação.'
+  },
+  {
+    keywords: ['cep', 'endereço'],
+    reply: 'O endereço é preenchido automaticamente assim que você digita o CEP no formulário — rua, bairro e cidade aparecem sozinhos.'
+  },
+  {
+    keywords: ['qr', 'qr code', 'fiscalização', 'validar'],
+    reply: 'Cada credencial tem um QR Code único. A fiscalização em campo escaneia o código e confirma a autenticidade em segundos.'
   }
+]
+
+const FALLBACK_REPLY = 'Boa pergunta! Nesta demonstração eu respondo sobre documentos, prazos, assinatura digital, validade e QR Code da credencial. Pode perguntar sobre algum desses pontos?'
+
+function getBotReply(userText){
+  const normalized = userText.toLowerCase()
+  const match = KNOWLEDGE_BASE.find(item =>
+    item.keywords.some(keyword => normalized.includes(keyword))
+  )
+  return match ? match.reply : FALLBACK_REPLY
+}
+
+function sendMessage(){
+  const text = chatInput.value.trim()
+  if (!text || chatSend.disabled) return
+
+  chatSuggestions.style.display = 'none'
+  addMessage('user', text)
+  chatInput.value = ''
+  chatInput.style.height = 'auto'
+  chatSend.disabled = true
+  addTyping()
+
+  // Simula um pequeno tempo de "digitação" para parecer natural
+  setTimeout(() => {
+    removeTyping()
+    const reply = getBotReply(text)
+    addMessage('bot', reply)
+    chatSuggestions.style.display = 'flex'
+    chatSend.disabled = false
+  }, 600 + Math.random() * 500)
 }
 
   // Mobile nav toggle
