@@ -662,12 +662,12 @@
       <div>
         <span class="eyebrow">● Para secretarias de trânsito e mobilidade</span>
         <h1>Credencial de estacionamento para idosos e PCD, <em>sem papel e sem fila</em></h1>
-        <p class="lead">ParkFácil leva a solicitação, a análise e a emissão da credencial de estacionamento para um único fluxo digital — do CEP do cidadão à assinatura no PDF final.</p>
+        <p class="lead">ParkFácil leva a solicitação, a análise e a emissão da credencial de estacionamento para um único fluxo digital, do CEP do cidadão à assinatura no PDF final.</p>
         <div class="hero-actions">
           <a href="#contato" class="btn btn-primary">Pedir demonstração</a>
           <a href="#como-funciona" class="btn btn-outline">Ver como funciona</a>
         </div>
-        <div class="hero-note"><span class="dot"></span> Fluxo pensado para o dia a dia do servidor público — sem sistemas paralelos.</div>
+        <div class="hero-note"><span class="dot"></span> Fluxo pensado para o dia a dia do servidor público sem sistemas paralelos.</div>
       </div>
       <div class="card-stage">
         <div class="credential">
@@ -751,7 +751,7 @@
         <div class="process-step reveal">
           <span class="step-num mono">03 — Emissão</span>
           <h3>Credencial sai assinada</h3>
-          <p>Assinatura digital, geração do PDF e QR Code de validação — pronta para impressão ou uso direto no celular.</p>
+          <p>Assinatura digital, geração do PDF e QR Code de validação pronta para impressão ou uso direto no celular.</p>
         </div>
       </div>
     </section>
@@ -760,7 +760,7 @@
       <div class="section-head reveal">
         <span class="eyebrow">Recursos</span>
         <h2>Construído para o fluxo real de uma secretaria</h2>
-        <p>Cada recurso resolve um ponto específico do processo de emissão — nada além do necessário.</p>
+        <p>Cada recurso resolve um ponto específico do processo de emissão nada além do necessário.</p>
       </div>
       <div class="features-grid reveal">
         <div class="feature">
@@ -800,7 +800,7 @@
       <div class="cta-band reveal">
         <div>
           <h2>Leve o ParkFácil para a sua secretaria</h2>
-          <p>Uma demonstração guiada, com o fluxo completo — do pedido do cidadão à credencial assinada.</p>
+          <p>Uma demonstração guiada, com o fluxo completo do pedido do cidadão à credencial assinada.</p>
         </div>
         <a href="mailto:contato@parkfacil.exemplo" class="btn btn-primary">Pedir demonstração</a>
       </div>
@@ -811,7 +811,7 @@
 <footer>
   <div class="wrap">
     <div class="footer-row">
-      <div>ParkFácil — protótipo de portfólio, inspirado em um sistema real de emissão de credenciais.</div>
+      <div>ParkFácil, protótipo de portfólio, inspirado em um sistema real feito por Shamara F de Souza.</div>
       <div class="mono">© 2026</div>
     </div>
   </div>
@@ -847,7 +847,7 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
   </div>
-  <div class="chat-disclaimer">Assistente de demonstração — as respostas são geradas por IA para fins de portfólio.</div>
+  <div class="chat-disclaimer">Assistente de demonstração, as respostas são geradas por IA para fins de portfólio.</div>
 </div>
 
 <script>
@@ -925,61 +925,62 @@ Responda sempre em português do Brasil, em tom cordial, direto e prestativo, co
     const el = document.getElementById('typingIndicator');
     if (el) el.remove();
   }
+async function sendMessage(){
+  const text = chatInput.value.trim();
+  if (!text || chatSend.disabled) return;
 
-  async function sendMessage(){
-    const text = chatInput.value.trim();
-    if (!text || chatSend.disabled) return;
+  chatSuggestions.style.display = 'none';
+  addMessage('user', text);
+  history.push({ role: 'user', content: text });
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+  chatSend.disabled = true;
+  addTyping();
 
-    chatSuggestions.style.display = 'none';
-    addMessage('user', text);
-    history.push({ role: 'user', content: text });
-    chatInput.value = '';
-    chatInput.style.height = 'auto';
-    chatSend.disabled = true;
-    addTyping();
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        system: SYSTEM_PROMPT,
+        messages: history
+      })
+    });
 
+    let data;
     try {
-      // A chave da IA fica protegida na função /api/chat — nunca no navegador.
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          system: SYSTEM_PROMPT,
-          messages: history
-        })
-      });
-
-      let data;
-      try {
-        data = await response.json();
-      } catch (parseErr) {
-        throw new Error('Resposta inválida do servidor (status ' + response.status + ')');
-      }
-
-      removeTyping();
-
-      if (!response.ok || data.type === 'error') {
-        const apiMsg = data && data.error && data.error.message ? data.error.message : ('status ' + response.status);
-        console.error('Chat API error:', data);
-        addMessage('bot', 'Erro da API: ' + apiMsg);
-        history.pop(); // remove the user turn so a retry doesn't duplicate context
-        return;
-      }
-
-      const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text);
-      const reply = textBlocks.join('\n').trim() || 'Desculpe, não consegui responder agora. Pode tentar novamente?';
-
-      addMessage('bot', reply);
-      history.push({ role: 'assistant', content: reply });
-    } catch (err) {
-      removeTyping();
-      console.error('Chat error:', err);
-      addMessage('bot', 'Erro de conexão: ' + (err && err.message ? err.message : 'desconhecido') + '. Pode tentar de novo?');
-      history.pop();
-    } finally {
-      chatSend.disabled = false;
+      data = await response.json();
+    } catch (parseErr) {
+      throw new Error('Resposta inválida do servidor (status ' + response.status + ')');
     }
+
+    removeTyping();
+
+    if (!response.ok || data.type === 'error') {
+      const apiMsg = data && data.error && data.error.message ? data.error.message : ('status ' + response.status);
+      console.error('Chat API error:', data);
+      addMessage('bot', 'Erro da API: ' + apiMsg);
+      history.pop();
+      chatSuggestions.style.display = 'flex';
+      return;
+    }
+
+    const textBlocks = (data.content || []).filter(b => b.type === 'text').map(b => b.text);
+    const reply = textBlocks.join('\n').trim() || 'Desculpe, não consegui responder agora. Pode tentar novamente?';
+
+    addMessage('bot', reply);
+    history.push({ role: 'assistant', content: reply });
+    chatSuggestions.style.display = 'flex';
+  } catch (err) {
+    removeTyping();
+    console.error('Chat error:', err);
+    addMessage('bot', 'Erro de conexão: ' + (err && err.message ? err.message : 'desconhecido') + '. Pode tentar de novo?');
+    history.pop();
+    chatSuggestions.style.display = 'flex';
+  } finally {
+    chatSend.disabled = false;
   }
+}
 
   // Mobile nav toggle
   const hamburger = document.getElementById('hamburger');
